@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staff Logs</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
+        h1 { color: #333; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        a.button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        a.button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Staff Activity Logs</h1>
+
+    <a class="button" href="{{ url_for('upload') }}">← Back to Upload Page</a>
+
+    {% if logs %}
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Staff Name</th>
+                <th>Action</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Franchise ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log['timestamp'] }}</td>
+                <td>{{ log['staff_name'] }}</td>
+                <td>{{ log['action'] }}</td>
+                <td>{{ log['item_name'] }}</td>
+                <td>{{ log['quantity'] }}</td>
+                <td>{{ log['franchise_id'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No logs found.</p>
+    {% endif %}
+
+</body>
+</html>

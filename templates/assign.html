@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assign Media to Display</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container py-5">
+    <h2>Assign Media to Display</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Display ID</label>
+            <input type="text" name="display_id" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Select Media</label>
+            <select name="media_id" class="form-select" required>
+                {% for id, filename in media %}
+                    <option value="{{ id }}">{{ filename }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Assign</button>
+        <a href="/upload" class="btn btn-secondary ms-2">Back to Upload</a>
+    </form>
+</body>
+</html>

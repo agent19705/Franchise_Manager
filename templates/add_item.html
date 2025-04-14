@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Inventory Item</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+        h1 { color: #333; }
+        form {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Add New Inventory Item</h1>
+
+    <form method="POST">
+        <label for="item">Item Name:</label>
+        <input type="text" id="item" name="item" required>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+
+        <label for="franchise">Franchise ID:</label>
+        <input type="text" id="franchise" name="franchise" required>
+
+        <label for="staff">Staff Name:</label>
+        <input type="text" id="staff" name="staff" required>
+
+        <input type="submit" value="Add Item">
+    </form>
+
+    <a href="{{ url_for('inventory', franchise_id='1') }}">← Back to Inventory</a>
+
+</body>
+</html>
