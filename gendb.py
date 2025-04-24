@@ -1,31 +1,28 @@
 import sqlite3
+from werkzeug.security import generate_password_hash
 
-conn = sqlite3.connect("database.db")
-cursor = conn.cursor()
+# Connect to the database
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
 
-# Create inventory table
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS inventory (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    item_name TEXT NOT NULL,
-    quantity INTEGER NOT NULL,
-    franchise_id TEXT NOT NULL
-);
-""")
+# Password to be used for all users
+password = '1234'
 
-# Create logs table
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    staff_name TEXT NOT NULL,
-    action TEXT NOT NULL,
-    item_name TEXT NOT NULL,
-    quantity INTEGER,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    franchise_id TEXT NOT NULL
-);
-""")
+# Generate hashed password
+hashed_password = generate_password_hash(password)
 
+# Insert dummy users (owner, manager, staff)
+users = [
+    ('owner1', hashed_password, 'owner', 'F1'),
+    ('manager1', hashed_password, 'manager', 'F1'),
+    ('staff1', hashed_password, 'staff', 'F1')
+]
+
+# Insert users into the database
+c.executemany('INSERT INTO users (username, password_hash, role, franchise_id) VALUES (?, ?, ?, ?)', users)
+
+# Commit the transaction and close the connection
 conn.commit()
 conn.close()
-print("Database setup complete.")
+
+print("Owner, Manager, and Staff with password '1234' added successfully.")

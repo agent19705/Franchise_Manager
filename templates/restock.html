@@ -5,26 +5,56 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #121212;
-            color: #f5f5f5;
+            background-color: #e4e4e4;
+            color: #000000;
+            margin: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            height: 100vh;
+            padding-top: 30px;
+            position: fixed;
+        }
+        .sidebar h2 {
+            font-weight: bold;
+            padding-left: 20px;
+            color: #fff;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #ccc;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+        .sidebar a:hover {
+            background-color: #4b657f;
+            color: #fff;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 40px;
             display: flex;
             justify-content: center;
             align-items: center;
+            width: calc(100% - 260px);
             height: 100vh;
         }
         form {
-            background: #1e1e1e;
+            background: #f6f3f3;
             padding: 30px;
             border-radius: 10px;
             width: 300px;
         }
-        input, button {
+        input, select, button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            background: #333;
+            background: #e7e7e8;
             border: none;
-            color: #fff;
+            color: #070707;
             border-radius: 5px;
         }
         button {
@@ -41,14 +71,39 @@
 </head>
 <body>
 
-    <form method="POST">
-        <h2>Restock Item</h2>
-        <input type="text" name="item" placeholder="Item name" required>
-        <input type="number" name="quantity" placeholder="Quantity to add" required>
-        <input type="text" name="franchise" placeholder="Franchise ID" required>
-        <input type="text" name="staff" placeholder="Staff name" required>
+<div class="sidebar">
+    <h2>Dashboard</h2>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('upload') }}">Upload Media</a>
+    <a href="{{ url_for('assign') }}">Assign to Display</a>
+    <a href="{{ url_for('inventory', franchise_id='all') }}">Inventory</a>
+    <a href="{{ url_for('add_item') }}">Add Item</a>
+    <a href="{{ url_for('restock') }}">Restock</a>
+    <a href="{{ url_for('view_logs') }}">Activity Logs</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+<div class="content">
+    <form method="POST" action="{{ url_for('restock') }}">
+        <label for="item">Item Name:</label>
+        <input type="text" id="item" name="item" value="{{ item_name }}" required>
+    
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" value="{{ quantity }}" required>
+    
+        <label for="franchise">Franchise:</label>
+        <select name="franchise" required>
+            {% for franchise in franchises %}
+            <option value="{{ franchise.id }}" {% if franchise.id == session['franchise_id'] %}selected{% endif %}>
+                {{ franchise.location }}
+            </option>
+            {% endfor %}
+        </select>
+    
         <button type="submit">Restock</button>
     </form>
+    
+</div>
 
 </body>
 </html>
