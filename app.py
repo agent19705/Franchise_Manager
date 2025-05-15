@@ -6,7 +6,6 @@ import hashlib
 import json
 from werkzeug.utils import secure_filename
 from datetime import datetime
-from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
@@ -82,6 +81,30 @@ def get_db_connection():
 
 
 
+from threading import Timer
+from datetime import datetime
+import sqlite3
+
+def assign_scheduled_media(display_id, filename):
+    with sqlite3.connect('database.db') as conn:
+        c = conn.cursor()
+        c.execute("INSERT INTO media (filename) VALUES (?)", (filename,))
+        media_id = c.lastrowid
+        c.execute("INSERT INTO assignments (display_id, media_id) VALUES (?, ?)", (display_id, media_id))
+        conn.commit()
+        print(f"✅ Scheduled media {filename} assigned to {display_id} at {datetime.now()}")
+
+def schedule_media_switch(display_id, filename, start_time_str):
+    try:
+        start_time = datetime.fromisoformat(start_time_str)
+        delay = (start_time - datetime.now()).total_seconds()
+        if delay <= 0:
+            assign_scheduled_media(display_id, filename)
+        else:
+            print(f"⏳ Scheduling media for {display_id} after {delay:.2f} seconds")
+            Timer(delay, assign_scheduled_media, args=[display_id, filename]).start()
+    except Exception as e:
+        print(f"❌ Failed to schedule media: {e}")
 
 
 
@@ -367,15 +390,19 @@ from datetime import datetime
 SCHEDULE_FILE = 'schedules.json'
 
 def load_schedules():
-    try:
-        with open(SCHEDULE_FILE, 'r') as f:
-            return json.load(f)
-    except Exception:
+    if not os.path.exists(SCHEDULE_FILE):
         return {}
+    with open(SCHEDULE_FILE, 'r') as f:
+        return json.load(f)
+
 
 def save_schedules(schedules):
     with open(SCHEDULE_FILE, 'w') as f:
         json.dump(schedules, f, indent=2)
+    print("✅ Schedule saved to JSON.")
+
+
+
 @app.route('/assign_upload/<string:display_id>', methods=['GET', 'POST'])
 def assign_upload(display_id):
     if 'user_id' not in session:
@@ -418,12 +445,36 @@ def assign_upload(display_id):
                 filepath = os.path.join('static/uploads', filename)
                 file.save(filepath)
 
-                # Save media and assignment
+                # Save media only (not assigned yet)
                 c.execute("INSERT INTO media (filename) VALUES (?)", (filename,))
                 media_id = c.lastrowid
-                c.execute("INSERT INTO assignments (display_id, media_id) VALUES (?, ?)", (display_id, media_id))
                 conn.commit()
-                flash('Media uploaded and assigned successfully.', 'success')
+
+                # Optional: Handle schedule time
+                start_time = request.form.get("start_time")
+                if start_time:
+                    try:
+                        # Save schedule to JSON
+                        schedules = load_schedules()
+                        display_schedules = schedules.get(display_id, [])
+                        display_schedules.append({
+                            "start_time": start_time,
+                            "filename": filename
+                        })
+                        schedules[display_id] = display_schedules
+                        save_schedules(schedules)
+
+                        # Schedule actual DB assignment
+                        schedule_media_switch(display_id, filename, start_time)
+                        flash("Scheduled media successfully.", "success")
+                    except Exception as e:
+                        flash(f"Error in scheduling: {e}", "danger")
+                else:
+                    # No schedule provided → assign immediately
+                    c.execute("INSERT INTO assignments (display_id, media_id) VALUES (?, ?)", (display_id, media_id))
+                    conn.commit()
+                    flash('Media uploaded and assigned successfully.', 'success')
+
                 return redirect(url_for('assign_upload', display_id=display_id))
             else:
                 flash("No file selected.", "warning")
@@ -493,45 +544,43 @@ def assign():
 @app.route('/display/<display_id>')
 def display_sim(display_id):
     now = datetime.now()
-    schedules = load_schedules()
-
     media_file = None
 
-    if display_id in schedules:
-        # Filter schedules for those start_time <= now
-        valid_schedules = [s for s in schedules[display_id] if datetime.strptime(s['start_time'], '%Y-%m-%d %H:%M:%S') <= now]
+    # 1. Check schedule.json
+    schedules = load_schedules()
+    display_schedule = schedules.get(display_id, [])
 
-        if valid_schedules:
-            # Pick the one with latest start_time <= now
-            latest_schedule = max(valid_schedules, key=lambda s: s['start_time'])
-            media_file = latest_schedule['filename']
+    for entry in sorted(display_schedule, key=lambda x: x['start_time'], reverse=True):
+        try:
+            start_time = datetime.fromisoformat(entry['start_time'])
+            if start_time <= now:
+                media_file = entry['filename']
+                break
+        except Exception as e:
+            print(f"❌ Error parsing start_time: {entry['start_time']} - {e}")
 
-    if not media_file:
-        # fallback: get latest manually assigned media from DB
-        with get_db_connection() as conn:
+    with get_db_connection() as conn:
+        # 2. Fallback to latest manually assigned media
+        if not media_file:
             row = conn.execute("""
                 SELECT m.filename FROM assignments a
-                JOIN media m ON a.media_id = m.id
+                JOIN media m ON m.id = a.media_id
                 WHERE a.display_id = ?
                 ORDER BY a.rowid DESC
                 LIMIT 1
             """, (display_id,)).fetchone()
             media_file = row[0] if row else None
 
-            # Inventory always shown
-            inventory = conn.execute("""
-                SELECT item_name, quantity FROM inventory WHERE franchise_id = ?
-            """, (display_id,)).fetchall()
-
-        return render_template('view_display.html', filename=media_file, inventory=inventory, franchise_id=display_id)
-
-    # If we found media_file from schedules, get inventory as well
-    with get_db_connection() as conn:
+        # 3. Always show inventory
         inventory = conn.execute("""
             SELECT item_name, quantity FROM inventory WHERE franchise_id = ?
         """, (display_id,)).fetchall()
 
     return render_template('view_display.html', filename=media_file, inventory=inventory, franchise_id=display_id)
+
+
+
+
 
 @app.route('/inventory')
 def inventory():

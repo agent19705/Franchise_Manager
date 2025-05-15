@@ -328,15 +328,13 @@
   <h2>Set Start Time</h2>
   
   <form method="POST" enctype="multipart/form-data">
-  <div>
-    <label for="media_file">Upload Media</label>
     <input type="file" name="media_file" required>
-  </div>
-  <div>
-    <label for="start_time">Start Time</label>
-    <input type="datetime-local" name="start_time" id="start_time" required>
-  </div>
-  <button type="submit">Submit</button>
+    
+    <!-- Add this field -->
+    <label for="start_time">Schedule Start Time:</label>
+    <input type="datetime-local" name="start_time">
+    
+    <button type="submit">Upload</button>
 </form>
 
 
