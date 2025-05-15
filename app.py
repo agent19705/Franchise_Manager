@@ -6,7 +6,6 @@ import hashlib
 import json
 from werkzeug.utils import secure_filename
 from datetime import datetime
-from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
