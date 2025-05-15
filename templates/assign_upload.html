@@ -1,0 +1,354 @@
+<head>
+  <style>
+    /* Overall Container */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: auto;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 180px;
+      background-color: #f2f2f2;
+      color: #8e8e8e;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .sidebar img.logo {
+      margin-left: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .nav-item {
+      margin: 10px 10px;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #f2f2f2;
+      color: #8e8e8e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .nav-item:hover {
+      background-color: #ddd;
+    }
+
+    .nav-item.active {
+      background-color: #000;
+      color: white;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      margin-left: 40px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      background-color: #e9e9e9;
+      overflow: auto;
+    }
+
+    .header {
+      background: #dcdcdc;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .header p {
+      margin: 4px 0 0;
+      font-size: 14px;
+    }
+
+    /* Display Box */
+    .live-displays {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .display-box {
+      width: 220px;
+      min-height: 240px;
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .display-box img {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      background-color: black;
+      margin-bottom: 10px;
+    }
+
+    .display-box:hover {
+      background-color: #f0f0f0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .display-box.selected {
+      border: 2px solid #007bff;
+      background-color: #e0f7ff;
+    }
+
+    .content {
+      display: flex;
+      gap: 40px;
+    }
+
+    .live-feed {
+      background: #333;
+      width: 280px;
+      height: 420px;
+      border-radius: 16px;
+      padding: 10px;
+      color: white;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* Drag-and-drop upload box */
+    .upload-box {
+      background: #f7f7f7;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      border: 2px dashed #ccc;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .upload-box:hover {
+      background-color: #e0e0e0;
+      border-color: #007bff;
+    }
+
+    .upload-box p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .upload-box button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .upload-box button:hover {
+      background: #0056b3;
+    }
+
+    .full-btn {
+      background: #e0e0e0;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    /* Fix for Media Assignment */
+    .no-media {
+      color: #888;
+      font-style: italic;
+    }
+    a{
+      text-decoration: none;
+    }
+    /* Form Styles */
+/* Removed from .schedule-form: upload-box related styles */
+
+.schedule-form {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+  width: 100%;
+  max-width: 850px;
+}
+
+.schedule-form h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.schedule-form .form-group {
+  margin-bottom: 16px;
+}
+
+.schedule-form label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.schedule-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.schedule-form input[type="datetime-local"] {
+  padding: 10px 12px;
+}
+
+.schedule-form button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.schedule-form button:hover {
+  background: #0056b3;
+}
+
+
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Franchise Manager" class="logo" />
+        <a href="{{ url_for('home') }}" class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">Dashboard</a>
+        <a href="{{ url_for('display') }}" class="nav-item active">Display</a>
+
+        <a href="{{ url_for('view_logs') }}" class="nav-item {% if request.endpoint == 'view_logs' %}active{% endif %}">Logs</a>
+        <a href="{{ url_for('inventory') }}" class="nav-item {% if request.endpoint == 'inventory' %}active{% endif %}">Inventory</a>
+        
+      </div>
+      <div>
+        <div class="user">
+          <img src="https://i.pravatar.cc/40?img=12" alt="User" />
+          <span>{{ user.name }}<br /><small>{{ user.role }}</small></span>
+        </div>
+        <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
+          <button type="submit" class="logout">Log Out</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+  <div class="header">
+    <h1>Current feed</h1>
+    <p>Displays currently playing media</p>
+  </div>
+
+  <div class="content">
+    <div class="live-feed">
+      <div class="display-box">
+        <strong>{{ display.display_name }}</strong>
+        <p>ID: {{ display.display_id }}</p>
+        <p>Franchise: {{ display.franchise_id }}</p>
+        {% if display.filename %}
+          <img src="{{ url_for('static', filename='uploads/' + display.filename) }}" alt="Media Preview" />
+        {% else %}
+          <p style="font-size: 12px; color: #777;">No media assigned</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="controls">
+  <!-- Upload & Update Box -->
+  <div class="upload-box" id="upload-update">
+    <p>Drag and drop media file</p>
+    <form method="POST" action="{{ url_for('assign_upload', display_id=display.display_id) }}" enctype="multipart/form-data">
+      <input type="file" name="media_file" required />
+      <br /><br />
+      <button type="submit" class="full-btn">Update</button>
+    </form>
+  </div>
+
+  <!-- Schedule Box -->
+   <!-- Schedule Start Time Form -->
+<div class="schedule-form">
+  <h2>Set Start Time</h2>
+  
+  <form method="POST" enctype="multipart/form-data">
+  <div>
+    <label for="media_file">Upload Media</label>
+    <input type="file" name="media_file" required>
+  </div>
+  <div>
+    <label for="start_time">Start Time</label>
+    <input type="datetime-local" name="start_time" id="start_time" required>
+  </div>
+  <button type="submit">Submit</button>
+</form>
+
+
+
+</div>
+
+  <!-- Schedule Box -->
+
+
+</div>
+
+  </div>
+</div>
+  </div>
+</body>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Franchise Manager - Display</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      background-color: #e9e9e9;
+      overflow: hidden;
+    }
+
+    .city-buttons {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .city-buttons a {
+      background-color: #111;
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 18px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .city-buttons a:hover {
+      background-color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main">
+      <div class="content">
+        {% if role == 'owner' and franchise_id == 'all' %}
+            <h1>Select Franchise Location</h1>
+            <div class="city-buttons">
+                {% for franchise in franchises %}
+                    <a href="{{ url_for('inventory', franchise_id=franchise['id']) }}">
+                        <h4>{{ franchise['name'] }}</h4>
+                        <p>{{ franchise['location'] }}</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h1>Inventory for Franchise {{ franchise_name }}</h1>
+
+            <div class="city-buttons">
+                <a href="{{ url_for('add_item') }}">Add New Item</a>
+                <a href="{{ url_for('restock') }}">Restock Item</a>
+                <a href="{{ url_for('view_logs') }}">View Logs</a>
+            </div>
+
+            {% if items %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item['item_name'] }}</td>
+                        <td>{{ item['quantity'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No items found in the inventory.</p>
+            {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

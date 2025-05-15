@@ -1,90 +1,359 @@
+</html>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Restock Inventory</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #e4e4e4;
-            color: #000000;
-            margin: 0;
-            display: flex;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            height: 100vh;
-            padding-top: 30px;
-            position: fixed;
-        }
-        .sidebar h2 {
-            font-weight: bold;
-            padding-left: 20px;
-            color: #fff;
-        }
-        .sidebar a {
-            display: block;
-            padding: 12px 20px;
-            color: #ccc;
-            text-decoration: none;
-            transition: background 0.3s ease;
-        }
-        .sidebar a:hover {
-            background-color: #4b657f;
-            color: #fff;
-        }
-        .content {
-            margin-left: 260px;
-            padding: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: calc(100% - 260px);
-            height: 100vh;
-        }
-        form {
-            background: #f6f3f3;
-            padding: 30px;
-            border-radius: 10px;
-            width: 300px;
-        }
-        input, select, button {
+  <meta charset="UTF-8" />
+  <title>Franchise Manager - Display</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    a{
+      text-decoration: none;
+    }
+
+    .sidebar {
+      width: 180px;
+      background-color: #f2f2f2;
+      color: #8e8e8e;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .sidebar img.logo {
+      margin-left: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+      .nav-item {
+  margin: 10px 10px;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f2f2f2;
+  color: #8e8e8e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+    .nav-item:hover {
+      background-color: #ddd;
+    }
+
+    .nav-item.active {
+      background-color: #000;
+      color: white;
+    }
+
+    .main {
+      flex: 1;
+      margin-left: 40px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      background-color: #e9e9e9;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #dcdcdc;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .header p {
+      margin: 4px 0 0;
+      font-size: 14px;
+    }
+
+    .franchise-selector {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .franchise-selector button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background-color: #000;
+      color: white;
+      cursor: pointer;
+    }
+
+    .franchise-selector button:hover {
+      background-color: #444;
+    }
+
+    .live-displays {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .right-panel {
+      flex: 0.8;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .panel-section {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .panel-section h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .upcoming-changes .list-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .status-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: green;
+    }
+
+    .status-icon.pending {
+      background-color: gray;
+    }
+
+    .status-icon.upcoming {
+      background-color: blue;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .user img {
+      border-radius: 50%;
+      width: 40px;
+    }
+
+    .logout-form {
+      margin-top: 10px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .logout {
+      margin-top: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: #aaa;
+      background: none;
+      border: none;
+      transition: color 0.2s ease;
+    }
+
+    .logout:hover {
+      color: #000;
+    }
+    .display-box {
+  width: 220px;
+  min-height: 240px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.display-box img {
+  width: 100%;
+  height: 120px; /* or adjust based on design */
+  object-fit: contain;
+  background-color: black;
+}
+.logs-header {
+      background-color: #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .city-buttons {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .city-buttons a {
+      background-color: #111;
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 18px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .city-buttons a:hover {
+      background-color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+    table {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background: #e7e7e8;
-            border: none;
-            color: #070707;
-            border-radius: 5px;
+            border-collapse: collapse;
+            background: #fff;
         }
-        button {
-            background-color: #2196F3;
-            cursor: pointer;
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
         }
-        button:hover {
-            background-color: #1976D2;
-        }
-        h2 {
-            text-align: center;
-        }
-    </style>
+        th { background-color: #eee; }
+        .restock-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+  max-width: 400px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.restock-form label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.restock-form input,
+.restock-form select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  transition: border 0.2s ease, background-color 0.2s ease;
+}
+
+.restock-form input:focus,
+.restock-form select:focus {
+  outline: none;
+  border-color: #000;
+  background-color: #fff;
+}
+
+.restock-form button {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #000;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.restock-form button:hover {
+  background-color: #333;
+}
+
+        
+
+
+  </style>
 </head>
 <body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Franchise Manager" class="logo" />
+        <a href="{{ url_for('home') }}" class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">Dashboard</a>
+        <a href="{{ url_for('display') }}" class="nav-item {% if request.endpoint == 'select_display' %}active{% endif %}">Display</a>
+        <a href="{{ url_for('view_logs') }}" class="nav-item {% if request.endpoint == 'view_logs' %}active{% endif %}">Logs</a>
+        <a href="{{ url_for('inventory') }}" class="nav-item {% if request.endpoint == 'inventory' %}active{% endif %}">Inventory</a>
+        
+      </div>
+      <div>
+        <div class="user">
+          <img src="https://i.pravatar.cc/40?img=12" alt="User" />
+          <span>{{ user.name }}<br /><small>{{ user.role }}</small></span>
+        </div>
+        <form method="POST" action="{{ url_for('logout') }}" class="logout-form">
+          <button type="submit" class="logout">Log Out</button>
+        </form>
+      </div>
+    </div>
 
-<div class="sidebar">
-    <h2>Dashboard</h2>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('upload') }}">Upload Media</a>
-    <a href="{{ url_for('assign') }}">Assign to Display</a>
-    <a href="{{ url_for('inventory', franchise_id='all') }}">Inventory</a>
-    <a href="{{ url_for('add_item') }}">Add Item</a>
-    <a href="{{ url_for('restock') }}">Restock</a>
-    <a href="{{ url_for('view_logs') }}">Activity Logs</a>
-    <a href="{{ url_for('logout') }}">Logout</a>
-</div>
-
-<div class="content">
-    <form method="POST" action="{{ url_for('restock') }}">
+    <!-- Main Content -->
+    <div class="main">
+      <div class="content">
+    <form method="POST" action="{{ url_for('restock') }}" class="restock-form">
         <label for="item">Item Name:</label>
         <input type="text" id="item" name="item" value="{{ item_name }}" required>
     
@@ -104,6 +373,12 @@
     </form>
     
 </div>
+  </div>
 
+  <!-- Chart.js (optional for future use) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
+
+
+

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display - {{ franchise_id }}</title>
+    <meta http-equiv="refresh" content="5"> <!-- auto-refresh every 5 sec -->
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            margin: 0;
+        }
+        video, img {
+            max-width: 90vw;
+            max-height: 40vh;
+            margin: 20px auto;
+            display: block;
+        }
+        .inventory-section {
+            margin: 20px auto;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+        }
+        th {
+            background: #111;
+        }
+    </style>
+</head>
+<body>
+
+    {% if filename %}
+        {% if filename.endswith('.mp4') %}
+            <video autoplay loop muted>
+                <source src="{{ url_for('static', filename='uploads/' + filename) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% else %}
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Media">
+        {% endif %}
+    {% else %}
+        <p>No media assigned yet.</p>
+    {% endif %}
+
+    <div class="inventory-section">
+        <h2>Live Inventory - {{ franchise_id }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory %}
+                <tr>
+                    <td>{{ item['item_name'] }}</td>
+                    <td>{{ item['quantity'] }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="2">No items in inventory</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
